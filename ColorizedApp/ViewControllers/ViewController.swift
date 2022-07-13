@@ -8,6 +8,7 @@
 import UIKit
 
 class ViewController: UIViewController {
+   
     @IBOutlet var colorView: UIView!
     
     @IBOutlet var redLable: UILabel!
@@ -18,36 +19,61 @@ class ViewController: UIViewController {
     @IBOutlet var greenSlider: UISlider!
     @IBOutlet var blueSlider: UISlider!
     
+    @IBOutlet var redTF: UITextField!
+    @IBOutlet var greenTF: UITextField!
+    @IBOutlet var blueTF: UITextField!
+    
+    var delegate: ViewControllerDelegate!
+    var viewColor: UIColor!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         colorView.layer.cornerRadius = 15
-        
+
         redSlider.minimumTrackTintColor = .red
         greenSlider.minimumTrackTintColor = .green
         blueSlider.minimumTrackTintColor = .blue
-        
+
         settingColorView()
         setupLable()
+        colorView.backgroundColor = viewColor
         
+        settingTextField(for: redTF, greenTF, blueTF)
+
         redLable.text = string(from: redSlider)
         greenLable.text = string(from: greenSlider)
         blueLable.text = string(from: blueSlider)
-        
+
     }
-    
+
     @IBAction func rgbSlider(_ sender: UISlider) {
         settingColorView()
         argumentTransfer()
-        
-        redLable.text = string(from: redSlider)
-        greenLable.text = string(from: greenSlider)
-        blueLable.text = string(from: blueSlider)
-        
+
+        switch sender {
+        case redSlider:
+            redLable.text = string(from: redSlider)
+        case greenSlider:
+            greenLable.text = string(from: greenSlider)
+        default:
+            blueLable.text = string(from: blueSlider)
+        }
+
+
+
+
+    }
+    @IBAction func doneButton() {
+        delegate?.setColor(colorView.backgroundColor ?? .blue)
+        dismiss(animated: true)
     }
     
+}
+
+// MARK: - Private Methods
+extension ViewController {
     
-    // MARK: - Private Methods
     private func settingColorView() {
         colorView.backgroundColor = UIColor(
             red: CGFloat(redSlider.value),
@@ -73,5 +99,19 @@ class ViewController: UIViewController {
     private func string(from slider: UISlider) -> String {
         String(format: "%.2f", slider.value)
     }
+    //настройка TextField
+    
+    private func settingTextField(for textFields: UITextField...) {
+        textFields.forEach { textField in
+            switch textField {
+            case redTF:
+                textField.text = string(from: redSlider)
+            case greenTF:
+                textField.text = string(from: greenSlider)
+            default:
+                textField.text = string(from: blueSlider)
+            }
+        }
+    }
+    
 }
-
